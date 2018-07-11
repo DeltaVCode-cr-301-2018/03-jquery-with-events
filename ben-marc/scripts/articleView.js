@@ -78,7 +78,6 @@ articleView.handleMainNav = function() {
   $('nav a').on('click', function() {
     $('.tab-content').hide();
     let $activeTab = $(this).parent().data('content');
-    console.log($activeTab);
     let $activeTabID = $(`#${$activeTab}`);
     $activeTabID.show();
   });
@@ -95,6 +94,13 @@ articleView.setTeasers = function() {
   $('.article-body *:nth-of-type(n+2)').hide();
 
   // TODO: Add an event handler to reveal all the hidden elements, when the .read-on link is clicked. You can go ahead and hide the "Read On" link once it has been clicked. Be sure to prevent the default link-click action!
+  let $readOnElement = $('.read-on');
+  $readOnElement.on('click', function(event) {
+    event.preventDefault();
+    $(this).hide();
+    $(this).prev().children().show();
+  });
+
   // Ideally, we'd attach this as just one event handler on the #articles section, and let it process (in other words... delegate) any .read-on clicks that happen within child nodes.
 };
 
@@ -104,5 +110,5 @@ $(document).ready(function() {
   articleView.populateFilters();
   articleView.handleAuthorFilter();
   articleView.handleCategoryFilter();
-
+  articleView.setTeasers();
 });
