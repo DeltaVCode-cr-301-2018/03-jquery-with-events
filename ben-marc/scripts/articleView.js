@@ -6,28 +6,28 @@ let articleView = {};
 articleView.populateFilters = function() {
   $('article').each(function() {
     // REVIEW: We can declare several variables at once and assign their values later when using let. Keep in mind that we cannot do this with const.
-    let authorName, category, optionTag;
+    let $authorName, $category, optionTag;
     if (!$(this).hasClass('template')) {
       // REVIEW: We need to take every author name from the page, and make it an option in the Author filter.
       // To do so, Build an <option> DOM element that we can append to the author <select> element.
       // Start by grabbing the author's name from `this` article element, and then use that bit of text to create the option tag (in a variable named `optionTag`) that we can append to the #author-filter select element.
-      authorName = $(this).attr('data-author');
+      $authorName = $(this).attr('data-author');
 
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = `<option value="${authorName}">${authorName}</option>`;
-      console.log(optionTag);
-      if ($('#author-filter option[value="`${authorName}`"]').length === 0) {
+      optionTag = `<option value="${$authorName}">${$authorName}</option>`;
+      
+      if ($('#author-filter option[value="' + $authorName +'"]').length === 0) {
         $('#author-filter').append(optionTag);
       }
 
       // REVIEW: Similar to the above, but...
       // Avoid duplicates! We don't want to append the category name if the <select> already has this category as an option!
-      category = $(this).attr('data-category');
-
+      $category = $(this).attr('data-category');
+      
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = '<option value="' + category + '">' + category + '</option>';
-
-      if ($('#category-filter option[value="' + category + '"]').length === 0) {
+      optionTag = `<option value="${$category}">${$category}</option>`;
+      
+      if ($('#category-filter option[value="' + $category +'"]').length === 0) {
         $('#category-filter').append(optionTag);
       }
     }
@@ -37,10 +37,12 @@ articleView.populateFilters = function() {
 articleView.handleAuthorFilter = function() {
   $('#author-filter').on('change', function() {
     // REVIEW: Inside this function, "this" is the element that triggered the event handler function we are defining. "$(this)" is using jQuery to select that element (analogous to event.target that we have seen before), so we can chain jQuery methods onto it.
-    if ($(this).val()) {
+    let $author = $(this).val();
+    if ($author) {
       // TODO: If the <select> menu was changed to an option that has a value, we first need to hide all the articles, and then show just the ones that match for the author that was selected.
       // Use an "attribute selector" to find those articles, and fade them in for the reader.
-
+      $('article').hide();
+      $('article[data-author="' + $author +'"]').show();
     } else {
       // TODO: If the <select> menu was changed to an option that is blank, we should first show all the articles, except the one article we are using as a template.
 
@@ -77,4 +79,5 @@ articleView.setTeasers = function() {
 // TODO: Call all of the above functions, once we are sure the DOM is ready.
 $(document).ready(function() {
   articleView.populateFilters();
+  articleView.handleAuthorFilter();
 })
