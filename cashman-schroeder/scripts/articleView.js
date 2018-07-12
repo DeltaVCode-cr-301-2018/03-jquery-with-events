@@ -12,11 +12,13 @@ articleView.populateFilters = function() {
       // To do so, Build an <option> DOM element that we can append to the author <select> element.
       // Start by grabbing the author's name from `this` article element, and then use that bit of text to create the option tag (in a variable named `optionTag`) that we can append to the #author-filter select element.
       authorName = $(this).attr('data-author');
+      console.log(authorName);
 
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = `<option value= ${authorName} > ${authorName}</option>`;
+      optionTag = `<option value="${authorName}" > ${authorName}</option>`;
+      console.log(optionTag);
 
-      if ($('#author-filter option[value="' + authorName + '"]').length === 0) {
+      if ($(`#author-filter option[value="${authorName}"]`).length === 0) {
         $('#author-filter').append(optionTag);
       }
 
@@ -25,7 +27,7 @@ articleView.populateFilters = function() {
       category = $(this).attr('data-category');
 
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = `<option value= ${category} > ${category} </option>`;
+      optionTag = `<option value="${category}"> ${category} </option>`;
 
       if ($(`#category-filter option[value=" ${category}"]`).length === 0) {
         $('#category-filter').append(optionTag);
@@ -41,10 +43,11 @@ articleView.handleAuthorFilter = function() {
       // TODO: If the <select> menu was changed to an option that has a value, we first need to hide all the articles, and then show just the ones that match for the author that was selected.
       // Use an "attribute selector" to find those articles, and fade them in for the reader.
       $('article').hide();
-      $(`article[data-author='${(this).val()}']`).show();
+      var $x = $(`article[data-author='${$(this).val()}']`).fadeIn();
+      console.log({$x, val : $(this).val() });
     } else {
       // TODO: If the <select> menu was changed to an option that is blank, we should first show all the articles, except the one article we are using as a template.
-      $('article').show();
+      $('article').fadeIn();
     }
     $('#category-filter').val('');
   });
@@ -55,9 +58,9 @@ articleView.handleCategoryFilter = function() {
   $('#category-filter').on('change', function(){
     if ($(this).val()) {
       $('article').hide();
-      $(`article[data-category='${(this).val()}']`).show();
+      $(`article[data-category='${$(this).val()}']`).fadeIn();
     } else{
-      $('article').show();
+      $('article').fadeIn();
     }
     $('#author-filter').val('');
   });
@@ -73,7 +76,7 @@ articleView.handleMainNav = function() {
   // So: You need to dynamically build a selector string with the correct ID, based on the data available to you on the .tab element that was clicked.
 
   // REVIEW: Now trigger a click on the first .tab element, to set up the page.
-  $('nav .tab:first').on('click', function(){
+  $('nav .tab').on('click', function(){
     $('.tab-content').hide();
     var $activeTab = $(this).data('content');
     $('#' + $activeTab).show();
@@ -85,10 +88,11 @@ articleView.setTeasers = function() {
   // REVIEW: Hide elements beyond the first 2 in any article body.
   $('.article-body *:nth-of-type(n+2)').hide();
 
-  $('a .read-on').on('click', function(){
+  $('a.read-on').on('click', function(event){
     event.preventDefault();
     $(this).hide();
-    $(this).siblings('.article-body').show();
+    var $currentBody = $(this).siblings('.article-body');
+    $currentBody.find('*').show();
 
   });
 
@@ -98,5 +102,10 @@ articleView.setTeasers = function() {
 
 // TODO: Call all of the above functions, once we are sure the DOM is ready.
 $(document).ready(function() {
+  articleView.populateFilters();
+  articleView.handleAuthorFilter();
+  articleView.handleCategoryFilter();
+  articleView.handleMainNav();
+  articleView.setTeasers();
 
 })
